@@ -1,45 +1,15 @@
-﻿namespace BSEF20M034_H01
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BSEF20M034_H02
 {
     internal class Vehicle
     {
-        private string type;
-        private string model;
-        private string licencePlate;
-
-        // Parameterized Constructor
-        public Vehicle(string typ, string mod, string plate)
-        {
-            type = typ;
-            model = mod;
-            licencePlate = plate;
-        }
-
-        // Getters
-        public string getType()
-        {
-            return type;
-        }
-        public string getModel()
-        {
-            return model;
-        }
-        public string getLicence()
-        {
-            return licencePlate;
-        }
-
-        // Setter
-        public void setType(string typ)
-        {
-            type = typ;
-        }
-        public void setModel(string mod)
-        {
-            model = mod;
-        }
-        public void setLicencePlate(string plate)
-        {
-            licencePlate = plate;
-        }
+        public string type { get; set; }
+        public string model { get; set; }
+        public string licencePlate { get; set; }
     }
 }

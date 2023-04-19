@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DF1199FB-3EA4-4842-97A6-347319D39619}</ProjectGuid>
+    <ProjectGuid>{C4EC6FC3-7590-4568-93FC-984D40C51AEF}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>BSEF20M034_H01</RootNamespace>
-    <AssemblyName>BSEF20M034_H01</AssemblyName>
+    <RootNamespace>BSEF20M034_H02</RootNamespace>
+    <AssemblyName>BSEF20M034_H02</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

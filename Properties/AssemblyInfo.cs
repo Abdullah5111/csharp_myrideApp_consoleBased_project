@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BSEF20M034_H01")]
+[assembly: AssemblyTitle("BSEF20M034_H02")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BSEF20M034_H01")]
+[assembly: AssemblyProduct("BSEF20M034_H02")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("df1199fb-3ea4-4842-97a6-347319d39619")]
+[assembly: Guid("c4ec6fc3-7590-4568-93fc-984d40c51aef")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,33 +1,14 @@
-﻿using System.Net.Mail;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BSEF20M034_H01
+namespace BSEF20M034_H02
 {
     internal class Passenger
     {
-        private string name;
-        private string phoneNumber;
-
-        // Parameterized Constructor
-        public Passenger(string nam, string phone)
-        {
-            name = nam;
-            phoneNumber = phone;
-        }
-        public void setPassenger(string nam, string phone)
-        {
-            this.name = nam;
-            this.phoneNumber = phone;
-        }
-
-        // Getters
-        public string getName()
-        {
-            return name;
-        }
-
-        public string getPhoneNumber()
-        {
-            return phoneNumber;
-        }
+        public string name { get; set; }
+        public string phoneNumber { get; set; }
     }
 }

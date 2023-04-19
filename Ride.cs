@@ -1,19 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BSEF20M034_H01
+namespace BSEF20M034_H02
 {
     internal class Ride
     {
-        private Location startLocation;
-        private Location endLocation;
-        private float price = 0;
-        private Driver driver;
-        private Passenger passenger;
+        public Location startLocation { get; set; }
+        public Location endLocation { get; set; }
+        public float price { get; set; }
+        public Driver driver { get; set; }
+        public Passenger passenger { get; set; }
 
-        public void assignPassenger(string nam, string phone)
+        public bool bookRide(Passenger p, Location startLoc, Location endLoc, string vehType)
         {
-            passenger = new Passenger(nam, phone);
+            // Getting list of available drivers
+            List<Driver> availableDrivers = Admin.availDrivers(vehType);
+
+            // If no driver available
+            if(availableDrivers.Count == 0)
+            {
+                return false;
+            }
+
+            Driver d = availableDrivers[0];
+
+            // Finding minimum distance driver .....
+
+            // Applying eucular formula
+            int num1 = (int)availableDrivers[0].currentLocation.latitude + (int)availableDrivers[0].currentLocation.longitude;
+            int num2 = (int)startLoc.latitude + (int)startLoc.longitude;
+
+            int minimumDistance = Math.Abs(num1 - num2);
+
+            for (int i = 1; i < availableDrivers.Count; i++)
+            {
+                num1 = (int)availableDrivers[i].currentLocation.latitude + (int)availableDrivers[i].currentLocation.longitude;
+                int temp = Math.Abs(num1 - num2);
+                if (temp < minimumDistance)
+                {
+                    d = availableDrivers[i];
+                }
+            }
+
+            // assignings
+            assignDriver(d);
+            assignPassenger(p);
+            setLocations(startLoc, endLoc);
+
+            return true;
+        }
+
+        public float calculatePrice(string vehicle, Location startLocation, Location endLocation)
+        {
+            // Applying eucular formula
+            float num1 = ((float)endLocation.latitude - (float)startLocation.latitude) * ((float)endLocation.latitude - (float)startLocation.latitude);
+            float num2 = ((float)endLocation.longitude - (float)startLocation.longitude) * ((float)endLocation.longitude - (float)startLocation.longitude);
+
+            float distance = (float)Math.Sqrt(num2 + num1);
+
+            if (vehicle == "bike")
+            {
+                price = (distance * 275) / 50;
+                price = price + price / 20;
+            }
+
+            else if (vehicle == "Rickshaw")
+            {
+                price = ((distance * 275) / 35);
+                price = price + price / 10;
+            }
+
+            else
+            {
+                price = ((distance * 275) / 15);
+                price = price + price / 5;
+            }
+
+            return price;
         }
 
         public void assignDriver(Driver d)
@@ -21,61 +84,16 @@ namespace BSEF20M034_H01
             driver = d;
         }
 
+        public void assignPassenger(Passenger p)
+        {
+            passenger = new Passenger { name = p.name, phoneNumber = p.phoneNumber };
+        }
+
         public void setLocations(Location startLoc, Location endLoc)
         {
-            startLocation = startLoc;
-            endLocation = endLoc;
+            startLocation = new Location { latitude = startLoc.latitude, longitude = startLoc.longitude };
+
+            endLocation = new Location { latitude = endLoc.latitude, longitude = endLoc.longitude };
         }
-
-        public float calculatePrice(string vehicle)
-        {
-            float num1 = ((float)endLocation.getLocation()[0] - (float)startLocation.getLocation()[0]) * ((float)endLocation.getLocation()[0] - (float)startLocation.getLocation()[0]);
-            float num2 = ((float)endLocation.getLocation()[1] - (float)startLocation.getLocation()[1]) * ((float)endLocation.getLocation()[1] - (float)startLocation.getLocation()[1]);
-
-            float distance = (float)Math.Sqrt(num2 + num1);
-
-            if (vehicle == "bike")
-            {
-                price = ((distance * 275) / 50);
-                price = price + price / 20;
-                return price;
-            }
-
-            else if (vehicle == "Rickshaw")
-            {
-                price = ((distance * 275) / 35);
-                price = price + price / 10;
-                return price;
-            }
-
-            else
-            {
-                price = ((distance * 275) / 15);
-                price = price + price / 5;
-                return price;
-            }
-        }
-
-        public bool bookRide(Location startLoc, Location endLoc, Passenger pas, string vehicleType)
-        {
-            Driver dr = Admin.giveNearestDriver(startLoc, vehicleType);
-            if(dr == null)
-            {
-                return false;
-            }
-
-            passenger = pas;
-            driver = dr;
-            startLocation = startLoc;
-            endLocation = endLoc;
-
-            return true;
-        }
-
-        public void addDriversRating(int rating)
-        {
-            driver.addRatings(rating);
-        }
-
     }
 }

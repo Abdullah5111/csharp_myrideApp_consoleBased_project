@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BSEF20M034_H01
+namespace BSEF20M034_H02
 {
     internal class Program
     {
@@ -39,45 +38,57 @@ namespace BSEF20M034_H01
             Console.WriteLine("4: Search Driver");
             Console.WriteLine("5: Exit as Admin");
         }
+
+        static void searchMenu()
+        {
+            Console.WriteLine("1: Search by ID");
+            Console.WriteLine("2: Search by name");
+            Console.WriteLine("3: Search by age");
+            Console.WriteLine("4: Search by gender");
+            Console.WriteLine("5: Search by vehicle type");
+            Console.WriteLine("6: Exit searching");
+        }
         static void Main(string[] args)
         {
             welcome();
 
-            int option = 0;
+            string option = "0";
 
-            Admin admin = new Admin();
-
-            while (option != 4)
+            while(option != "4")
             {
                 mainMenu();
-
-                while (option < 1 || option > 4)
+                Console.Write("Select Option: ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                option = Console.ReadLine();
+                Console.ResetColor();
+                while (option != "1" && option != "2" && option != "3" && option != "4")
                 {
+                    Console.Write("Select Valid Option: ");
                     Console.ForegroundColor = ConsoleColor.Green;
-                    string val = Console.ReadLine();
+                    option = Console.ReadLine();
                     Console.ResetColor();
-                    option = Convert.ToInt32(val);
                 }
 
-                if (option == 1)
+                if(option == "1")
                 {
-                    option = 0;
-
                     //Asking Passenger Details For Ride
-                    Console.WriteLine("Enter name : ");
+
+                    Console.Write("Enter name: ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     string passengerName = Console.ReadLine();
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ResetColor();
 
                     bool flag = true; // This is for entering correct phone number
 
-                    Console.WriteLine("Enter Phone Number : ");
+                    Console.Write("Enter Phone Number: ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     string passengerPhoneNumber = Console.ReadLine();
                     Console.ResetColor();
+
                     while (flag)
                     {
                         flag = false;
+
                         // Verifying Correct Phone Number Format
                         int phoneNumberLength = passengerPhoneNumber.Length;
                         if (phoneNumberLength != 11)
@@ -87,64 +98,72 @@ namespace BSEF20M034_H01
 
                         else
                         {
+                            // Check if any other character entered
                             int i = 0;
                             for (; i < phoneNumberLength; i++)
                             {
                                 if (passengerPhoneNumber[i] != '0' && passengerPhoneNumber[i] != '1' && passengerPhoneNumber[i] != '2' && passengerPhoneNumber[i] != '3' && passengerPhoneNumber[i] != '4' && passengerPhoneNumber[i] != '5' && passengerPhoneNumber[i] != '6' && passengerPhoneNumber[i] != '7' && passengerPhoneNumber[i] != '8' && passengerPhoneNumber[i] != '9')
                                 {
-                                    Console.WriteLine(passengerPhoneNumber[i]);
                                     flag = true;
-                                    break;
+                                    i = phoneNumberLength;
                                 }
                             }
                         }
 
+                        // If got correct number or not
                         if (flag)
                         {
-                            Console.WriteLine("Enter valid Number : ");
+                            Console.Write("Enter valid Number: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             passengerPhoneNumber = Console.ReadLine();
                             Console.ResetColor();
                         }
                     }
 
-                    Passenger passenger = new Passenger(passengerName, passengerPhoneNumber);
+                    Passenger passenger = new Passenger { name = passengerName, phoneNumber = passengerPhoneNumber };
 
                     // Asking Starting Location
-                    Console.WriteLine("Enter Start Location : ");
+                    Console.Write("Enter Start Location: ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     string startLoc = Console.ReadLine();
                     Console.ResetColor();
 
                     string[] dimensions = startLoc.Split(',');
 
-                    Location startLocation = new Location(float.Parse(dimensions[0]), float.Parse(dimensions[1]));
+                    Location startLocation = new Location { longitude = float.Parse(dimensions[1]), latitude = float.Parse(dimensions[0]) };
 
                     // Asking Ending Location
-                    Console.WriteLine("Enter End Location : ");
+                    Console.Write("Enter End Location: ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     string endLoc = Console.ReadLine();
                     Console.ResetColor();
 
                     dimensions = endLoc.Split(',');
 
-                    Location endLocation = new Location(float.Parse(dimensions[0]), float.Parse(dimensions[1]));
-
+                    Location endLocation = new Location { longitude = float.Parse(dimensions[1]), latitude = float.Parse(dimensions[0]) };
 
                     // Asking For Ride Type
-                    Console.WriteLine("Enter Ride Type : ");
+                    Console.Write("Enter Ride Type: ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     string type = Console.ReadLine();
                     Console.ResetColor();
 
-                    Ride ride = new Ride();
-                    bool rideFlag = ride.bookRide(startLocation, endLocation, passenger, type);
+                    Ride myRide = new Ride();
+                    bool flag2 = myRide.bookRide(passenger, startLocation, endLocation, type);
 
-                    if(rideFlag)
+                    // No driver available
+                    if(flag2 == false)
+                    {
+                        Console.WriteLine("-------------------");
+                        Console.WriteLine("No driver available");
+                        Console.WriteLine("-------------------");
+                    }
+
+                    else
                     {
                         Console.WriteLine("\n--------------- THANK YOU ----------------\n");
 
-                        Console.WriteLine("Total cost of ride is " + ride.calculatePrice(type));
+                        Console.WriteLine("Total cost of ride is " + myRide.calculatePrice(type, startLocation, endLocation));
 
                         // Asking if rider wants that drive
                         Console.WriteLine("Enter ‘Y’ if you want to Book the ride, enter ‘N’ if you want to cancel operation: ");
@@ -153,6 +172,7 @@ namespace BSEF20M034_H01
                         string option2 = Console.ReadLine();
                         Console.ResetColor();
 
+                        // Check if rider proceeded or not
                         if (option2 == "y" || option2 == "Y")
                         {
                             Console.WriteLine("\nHappy Travel…!\n");
@@ -171,290 +191,482 @@ namespace BSEF20M034_H01
                                 Console.ResetColor();
                                 rating = Convert.ToInt32(val);
                             }
-
-                            ride.addDriversRating(rating);
                         }
                         else
                         {
                             Console.WriteLine("Try another driver");
                         }
                     }
-
-                    else
-                    {
-                        Console.WriteLine("No Driver Available");
-                    }
                 }
 
-                else if (option == 2)
+                else if(option == "2")
                 {
-                    option = 0;
-
-                    // Asking Drivers detail to search
-                    Console.WriteLine("Enter ID : ");
+                    // First of all check if driver exists or not
+                    Console.Write("Enter ID: ");
                     Console.ForegroundColor = ConsoleColor.Green;
-                    string val = Console.ReadLine();
-                    Console.ResetColor();
-                    int id = Convert.ToInt32(val);
-                    Console.WriteLine("Enter name : ");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    string name = Console.ReadLine();
+                    string id = Console.ReadLine();
                     Console.ResetColor();
 
-                    Driver driver = admin.searchDriverById(id);
-
-                    if (driver != null)
+                    if (Admin.searchByID(id) == false)
                     {
-                        Console.WriteLine("Hello " + driver.getName());
-                        Console.WriteLine("Where are you know?");
+                        Console.WriteLine("-----------------");
+                        Console.WriteLine("Driver not exists");
+                        Console.WriteLine("-----------------");
+                    }
+                    else
+                    {
+                        string option2 = "0";
 
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        string startLoc = Console.ReadLine();
-                        Console.ResetColor();
-
-                        string[] dimensions = startLoc.Split(',');
-
-                        driver.updateLocation(float.Parse(dimensions[0]), float.Parse(dimensions[1]));
-
-                        int option2 = 0;
-
-                        while (option2 != 3)
+                        while (option2 != "3")
                         {
                             driverMenu();
-                            while (option2 < 1 || option2 > 3)
+                            Console.Write("Select Option: ");
+                            option2 = Console.ReadLine();
+                            while (option2 != "1" && option2 != "2" && option2 != "3")
                             {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                string value = Console.ReadLine();
-                                Console.ResetColor();
-                                option2 = Convert.ToInt32(value);
+                                Console.Write("Select Valid Option: ");
+                                option2 = Console.ReadLine();
                             }
 
-                            if (option2 == 1)
+                            // Update availability
+                            if (option2 == "1")
                             {
-                                option2 = 0;
-
-                                driver.updateAvailability();
+                                Admin.updateAvailability(id);
+                                Console.WriteLine("***** Availability Updated *****");
                             }
 
-                            else if (option2 == 2)
+                            // Update Location
+                            else if (option2 == "2")
                             {
-                                option2 = 0;
-
-                                Console.WriteLine("Enter Location : ");
-
+                                Console.Write("Enter Current Location : ");
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 string loc = Console.ReadLine();
                                 Console.ResetColor();
+                                string[] dimensions = loc.Split(',');
 
-                                dimensions = startLoc.Split(',');
+                                Location currentLocation = new Location { latitude = float.Parse(dimensions[0]), longitude = float.Parse(dimensions[1]) };
 
-                                driver.updateLocation(float.Parse(dimensions[0]), float.Parse(dimensions[1]));
+                                Admin.updateLocation(id, currentLocation);
+                                Console.WriteLine("***** Location Updated *****");
                             }
                         }
                     }
-
-                    else
-                    {
-                        Console.WriteLine("\n*** Driver not exists ***\n");
-                    }
+                    
                 }
 
-                else if (option == 3)
+                else if (option == "3")
                 {
-                    option = 0;
+                    string option2 = "0";
 
-                    int option2 = 0;
-
-                    while (option2 != 5)
+                    while (option2 != "5")
                     {
                         adminMenu();
-                        while (option2 < 1 || option2 > 5)
+                        Console.Write("Select Option: ");
+                        option2 = Console.ReadLine();
+                        while (option2 != "1" && option2 != "2" && option2 != "3" && option2 != "4" && option2 != "5")
                         {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            string val = Console.ReadLine();
-                            Console.ResetColor();
-                            option2 = Convert.ToInt32(val);
+                            Console.Write("Select Valid Option: ");
+                            option2 = Console.ReadLine();
                         }
 
-                        if (option2 == 1)
+                        if (option2 == "1")
                         {
-                            option2 = 0;
-
-
                             // Asking Driver's Info To Register
 
-                            Console.WriteLine("Enter Name : ");
+                            Console.Write("Enter Name: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string name = Console.ReadLine();
                             Console.ResetColor();
 
-                            Console.WriteLine("Enter Age : ");
+                            Console.Write("Enter Age: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string val = Console.ReadLine();
                             Console.ResetColor();
                             int age = Convert.ToInt32(val);
 
-                            Console.WriteLine("Enter Gender : ");
+                            Console.Write("Enter Gender: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string gender = Console.ReadLine();
                             Console.ResetColor();
 
-                            Console.WriteLine("Enter Address : ");
+                            Console.Write("Enter Address: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string address = Console.ReadLine();
                             Console.ResetColor();
 
                             bool flag = true; // This is for entering correct phone number
-                            Console.WriteLine("Enter Phone Number : ");
+                            Console.Write("Enter Phone Number: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string phoneNumber = Console.ReadLine();
                             Console.ResetColor();
                             while (flag)
                             {
                                 flag = false;
+
                                 // Verifying Correct Phone Number Format
                                 int phoneNumberLength = phoneNumber.Length;
                                 int i = 0;
-                                for (; i < phoneNumberLength; i++)
+                                if (phoneNumberLength != 11)
                                 {
-                                    if (phoneNumber[i] != '0' && phoneNumber[i] != '1' && phoneNumber[i] != '2' && phoneNumber[i] != '3' && phoneNumber[i] != '4' && phoneNumber[i] != '5' && phoneNumber[i] != '6' && phoneNumber[i] != '7' && phoneNumber[i] != '8' && phoneNumber[i] != '9')
+                                    flag = true;
+                                }
+
+                                else
+                                {
+                                    for (; i < phoneNumberLength; i++)
                                     {
-                                        Console.WriteLine(phoneNumber[i]);
-                                        flag = true;
-                                        break;
+                                        if (phoneNumber[i] != '0' && phoneNumber[i] != '1' && phoneNumber[i] != '2' && phoneNumber[i] != '3' && phoneNumber[i] != '4' && phoneNumber[i] != '5' && phoneNumber[i] != '6' && phoneNumber[i] != '7' && phoneNumber[i] != '8' && phoneNumber[i] != '9')
+                                        {
+                                            flag = true;
+                                            break;
+                                        }
                                     }
                                 }
 
                                 if (flag)
                                 {
-                                    Console.WriteLine("Enter valid Number : ");
+                                    Console.Write("Enter valid Number: ");
                                     Console.ForegroundColor = ConsoleColor.Green;
                                     phoneNumber = Console.ReadLine();
                                     Console.ResetColor();
                                 }
                             }
 
-                            Console.WriteLine("Enter Location : ");
+                            // Asking drivers location
+                            Console.Write("Enter Location : ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string loc = Console.ReadLine();
                             Console.ResetColor();
                             string[] dimensions = loc.Split(',');
-                            float latitude = float.Parse(dimensions[0]);
-                            float longitude = float.Parse(dimensions[1]);
 
-                            Location currentLocation = new Location(latitude, longitude);
+                            Location currentLocation = new Location { latitude = float.Parse(dimensions[0]), longitude = float.Parse(dimensions[1]) };
 
                             // Asking for vehicle information
-                            Console.WriteLine("Enter Vehicle Type : ");
+                            Console.Write("Enter Vehicle Type: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string type = Console.ReadLine();
                             Console.ResetColor();
-                            Console.WriteLine("Enter Model : ");
+                            Console.Write("Enter Model: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string model = Console.ReadLine();
                             Console.ResetColor();
-                            Console.WriteLine("Enter Licence Plate : ");
+                            Console.Write("Enter Licence Plate: ");
                             Console.ForegroundColor = ConsoleColor.Green;
                             string plate = Console.ReadLine();
                             Console.ResetColor();
 
-                            Vehicle vehicle = new Vehicle(type, model, plate);
+                            Vehicle vehicle = new Vehicle { type = type, model = model, licencePlate = plate };
 
-                            Driver driver = new Driver(name, age, gender, address, phoneNumber, currentLocation, vehicle, true);
+                            Driver driver = new Driver { name = name, age = age, gender = gender, address = address, phoneNumber = phoneNumber, currentLocation = currentLocation, vehicle = vehicle, availability = true };
 
-                            Console.WriteLine("Driver Registered. ID : " + admin.addDriver(driver));
+                            // Driver added
+                            Admin.addDriver(driver);
+
+                            Console.WriteLine("------------------------");
+                            Console.WriteLine("----- Driver added -----");
+                            Console.WriteLine("------------------------");
                         }
 
-                        else if (option2 == 2)
+                        else if (option2 == "2")
                         {
-                            option2 = 0;
-
-
-                            Console.WriteLine("Enter ID : ");
+                            // Removing driver
+                            Console.Write("Enter ID: ");
                             Console.ForegroundColor = ConsoleColor.Green;
-                            string val = Console.ReadLine();
+                            string id = Console.ReadLine();
                             Console.ResetColor();
-                            int id = Convert.ToInt32(val);
+                            bool flag = Admin.removeDriver(id);
 
-                            admin.removeDriver(id);
-                        }
-
-                        else if (option2 == 3)
-                        {
-                            option2 = 0;
-
-                            Console.WriteLine("Enter ID : ");
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            string val = Console.ReadLine();
-                            Console.ResetColor();
-                            int id = Convert.ToInt32(val);
-
-                            if(admin.searchDriverById(id) == null)
+                            if (flag == true)
                             {
-                                Console.WriteLine("------------Driver with ID " + id + " not exist-------------");
+                                Console.WriteLine("Driver removed successfully");
                             }
-
                             else
                             {
-                                Console.WriteLine("------------Driver with ID " + id + " exists-------------");
+                                Console.WriteLine("Driver not exists");
+                            }
+                        }
 
-                                Console.WriteLine("Enter Age : ");
+                        else if (option2 == "3")
+                        {
+
+                            // Updating driver
+                            Console.Write("Enter ID to update: ");
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            string id = Console.ReadLine();
+                            Console.ResetColor();
+
+                            bool flag = Admin.searchByID(id);
+
+                            if (flag == true)
+                            {
+                                Console.Write("Enter Name: ");
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                val = Console.ReadLine();
+                                string name = Console.ReadLine();
+                                Console.ResetColor();
+
+                                Console.Write("Enter Age: ");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                string val = Console.ReadLine();
                                 Console.ResetColor();
                                 int age = Convert.ToInt32(val);
 
-                                Console.WriteLine("Enter Vehicle Type : ");
+                                Console.Write("Enter Gender: ");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                string gender = Console.ReadLine();
+                                Console.ResetColor();
+
+                                Console.Write("Enter Address: ");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                string address = Console.ReadLine();
+                                Console.ResetColor();
+
+                                bool flag2 = true; // This is for entering correct phone number
+                                Console.Write("Enter Phone Number: ");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                string phoneNumber = Console.ReadLine();
+                                Console.ResetColor();
+                                while (flag2)
+                                {
+                                    flag2 = false;
+
+                                    // Verifying Correct Phone Number Format
+                                    int phoneNumberLength = phoneNumber.Length;
+                                    int i = 0;
+                                    if (phoneNumberLength != 11 && phoneNumberLength != 0)
+                                    {
+                                        flag2 = true;
+                                    }
+
+                                    else
+                                    {
+                                        for (; i < phoneNumberLength; i++)
+                                        {
+                                            if (phoneNumber[i] != '0' && phoneNumber[i] != '1' && phoneNumber[i] != '2' && phoneNumber[i] != '3' && phoneNumber[i] != '4' && phoneNumber[i] != '5' && phoneNumber[i] != '6' && phoneNumber[i] != '7' && phoneNumber[i] != '8' && phoneNumber[i] != '9')
+                                            {
+                                                flag = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (flag2)
+                                    {
+                                        Console.Write("Enter valid Number: ");
+                                        Console.ForegroundColor = ConsoleColor.Green;
+                                        phoneNumber = Console.ReadLine();
+                                        Console.ResetColor();
+                                    }
+                                }
+
+                                Console.Write("Enter Location : ");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                string loc = Console.ReadLine();
+                                Console.ResetColor();
+                                string[] dimensions = loc.Split(',');
+
+                                Location currentLocation = new Location { latitude = float.Parse(dimensions[0]), longitude = float.Parse(dimensions[1]) };
+
+                                // Asking for vehicle information
+                                Console.Write("Enter Vehicle Type: ");
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 string type = Console.ReadLine();
                                 Console.ResetColor();
-
-                                Console.WriteLine("Enter Model : ");
+                                Console.Write("Enter Model: ");
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 string model = Console.ReadLine();
                                 Console.ResetColor();
-
-                                Console.WriteLine("Enter Licence Plate : ");
+                                Console.Write("Enter Licence Plate: ");
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 string plate = Console.ReadLine();
                                 Console.ResetColor();
 
-                                admin.updateDriver(id, age, type, model, plate);
+                                Vehicle vehicle = new Vehicle { type = type, model = model, licencePlate = plate };
 
-                                Console.WriteLine("------------ Driver Updated -------------");
+                                Driver driver = new Driver { name = name, age = age, gender = gender, address = address, phoneNumber = phoneNumber, currentLocation = currentLocation, vehicle = vehicle, availability = true };
 
-                            }
-                        }
-                        else if (option2 == 4)
-                        {
-                            option2 = 0;
-
-                            Console.WriteLine("Enter ID : ");
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            string val = Console.ReadLine();
-                            Console.ResetColor();
-                            int id = Convert.ToInt32(val);
-
-                            Driver driver = admin.searchDriver(id);
-
-                            if(driver == null)
-                            {
-                                Console.WriteLine("------------Driver with ID " + id + " not exist-------------");
+                                Admin.updateDriver(id, driver);
+                                Console.WriteLine("Driver updated successfully");
                             }
                             else
                             {
-                                Console.WriteLine("---------------------------------------------------------------------------");
-                                Console.WriteLine("Name        Age        Gender        V.Type        V.Model        V.Licence");
-                                Console.WriteLine("---------------------------------------------------------------------------");
-                                Console.WriteLine(String.Format("{0,-12}{1,-11}{2,-14}{3,-14}{4,-15}{5,-17}", driver.getName(), driver.getAge(), driver.getGender(), driver.getVehicleType(), driver.getModel(), driver.getLicence()));
-                                Console.WriteLine("---------------------------------------------------------------------------");
+                                Console.WriteLine("Driver not exists");
                             }
+                        }
+
+                        else if (option2 == "4")
+                        {
+                            string option3 = "0";
+
+                            while (option3 != "6")
+                            {
+                                searchMenu();
+                                Console.Write("Select Option: ");
+                                option3 = Console.ReadLine();
+                                while (option3 != "1" && option3 != "2" && option3 != "3" && option3 != "4" && option3 != "5" && option3 != "6")
+                                {
+                                    Console.Write("Select Valid Optionnn: ");
+                                    option3 = Console.ReadLine();
+                                }
+
+                                if (option3 == "1")
+                                {
+                                    Console.Write("Enter ID: ");
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    string id = Console.ReadLine();
+                                    Console.ResetColor();
+
+                                    bool flag = Admin.searchByID(id);
+
+                                    if (flag == false)
+                                    {
+                                        Console.WriteLine("Driver not exists");
+                                    }
+
+                                    else
+                                    {
+                                        Driver driver = Admin.searchDriverByID(id);
+
+                                        // Showing searched data
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                        Console.WriteLine("Name        Age        Gender        V.Type        V.Model        V.Licence");
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                        Console.WriteLine(String.Format("{0,-12}{1,-11}{2,-14}{3,-14}{4,-15}{5,-17}", driver.name, driver.age, driver.gender, driver.vehicle.type, driver.vehicle.model, driver.vehicle.licencePlate));
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+
+                                    }
+                                }
+
+                                else if(option3 == "2")
+                                {
+                                    // Asking for name to search
+                                    Console.Write("Enter name: ");
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    string name = Console.ReadLine();
+                                    Console.ResetColor();
+
+                                    List<Driver> drivers = Admin.searchByName(name);
+
+                                    // If drivers with that name not exist
+                                    if(drivers.Count == 0)
+                                    {
+                                        Console.WriteLine("--------------------------------");
+                                        Console.WriteLine("Drivers not exist with that name");
+                                        Console.WriteLine("--------------------------------");
+                                    }
+
+                                    else
+                                    {
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                        Console.WriteLine("Name        Age        Gender        V.Type        V.Model        V.Licence");
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+
+                                        for (int i = 0; i < drivers.Count; i++)
+                                        {
+                                            Console.WriteLine(String.Format("{0,-12}{1,-11}{2,-14}{3,-14}{4,-15}{5,-17}", drivers[i].name, drivers[i].age, drivers[i].gender, drivers[i].vehicle.type, drivers[i].vehicle.model, drivers[i].vehicle.licencePlate));
+                                        }
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                    }
+                                }
+
+                                else if (option3 == "3")
+                                {
+                                    // Search by name
+                                    Console.Write("Enter age: ");
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    string age = Console.ReadLine();
+                                    Console.ResetColor();
+
+                                    List<Driver> drivers = Admin.searchByAge(age);
+
+                                    if (drivers.Count == 0)
+                                    {
+                                        Console.WriteLine("--------------------------------");
+                                        Console.WriteLine("Drivers not exist with that age");
+                                        Console.WriteLine("--------------------------------");
+                                    }
+
+                                    else
+                                    {
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                        Console.WriteLine("Name        Age        Gender        V.Type        V.Model        V.Licence");
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+
+                                        for (int i = 0; i < drivers.Count; i++)
+                                        {
+                                            Console.WriteLine(String.Format("{0,-12}{1,-11}{2,-14}{3,-14}{4,-15}{5,-17}", drivers[i].name, drivers[i].age, drivers[i].gender, drivers[i].vehicle.type, drivers[i].vehicle.model, drivers[i].vehicle.licencePlate));
+                                        }
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                    }
+                                }
+
+                                else if (option3 == "4")
+                                {
+                                    // Search by gender
+                                    Console.Write("Enter gender: ");
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    string gender = Console.ReadLine();
+                                    Console.ResetColor();
+
+                                    List<Driver> drivers = Admin.searchByGender(gender);
+
+                                    if (drivers.Count == 0)
+                                    {
+                                        Console.WriteLine("--------------------------------");
+                                        Console.WriteLine("Drivers not exist with that gender");
+                                        Console.WriteLine("--------------------------------");
+                                    }
+
+                                    // Showing all drivers with matched gender
+                                    else
+                                    {
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                        Console.WriteLine("Name        Age        Gender        V.Type        V.Model        V.Licence");
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+
+                                        for (int i = 0; i < drivers.Count; i++)
+                                        {
+                                            Console.WriteLine(String.Format("{0,-12}{1,-11}{2,-14}{3,-14}{4,-15}{5,-17}", drivers[i].name, drivers[i].age, drivers[i].gender, drivers[i].vehicle.type, drivers[i].vehicle.model, drivers[i].vehicle.licencePlate));
+                                        }
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                    }
+                                }
+
+                                else if (option3 == "5")
+                                {
+                                    // Search by vehicle type
+                                    Console.Write("Enter vehicle type: ");
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    string type = Console.ReadLine();
+                                    Console.ResetColor();
+
+                                    List<Driver> drivers = Admin.searchByVehicle(type);
+
+                                    if (drivers.Count == 0)
+                                    {
+                                        Console.WriteLine("--------------------------------");
+                                        Console.WriteLine("Drivers not exist with that vehicle");
+                                        Console.WriteLine("--------------------------------");
+                                    }
+
+                                    // Showing all drivers with matched vehicle
+                                    else
+                                    {
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                        Console.WriteLine("Name        Age        Gender        V.Type        V.Model        V.Licence");
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+
+                                        for (int i = 0; i < drivers.Count; i++)
+                                        {
+                                            Console.WriteLine(String.Format("{0,-12}{1,-11}{2,-14}{3,-14}{4,-15}{5,-17}", drivers[i].name, drivers[i].age, drivers[i].gender, drivers[i].vehicle.type, drivers[i].vehicle.model, drivers[i].vehicle.licencePlate));
+                                        }
+                                        Console.WriteLine("---------------------------------------------------------------------------");
+                                    }
+                                }
+                            }          
                         }
                     }
                 }
             }
-
-            Console.WriteLine("Thanks for visiting :)");
         }
     }
 }
