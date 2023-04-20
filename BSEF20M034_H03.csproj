@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C4EC6FC3-7590-4568-93FC-984D40C51AEF}</ProjectGuid>
+    <ProjectGuid>{3C56658E-74EE-407A-938F-D85D542FDCCE}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>BSEF20M034_H02</RootNamespace>
-    <AssemblyName>BSEF20M034_H02</AssemblyName>
+    <RootNamespace>BSEF20M034_H03</RootNamespace>
+    <AssemblyName>BSEF20M034_H03</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -50,6 +50,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ride.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Vehicle.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BSEF20M034_H02
+namespace BSEF20M034_H03
 {
     internal class Program
     {
@@ -14,7 +11,6 @@ namespace BSEF20M034_H02
             Console.WriteLine("********************** WELCOME TO MYRIDE **********************");
             Console.WriteLine("***************************************************************\n");
         }
-
         static void mainMenu()
         {
             Console.WriteLine("1: Book a Ride");
@@ -22,23 +18,20 @@ namespace BSEF20M034_H02
             Console.WriteLine("3: Enter as Admin");
             Console.WriteLine("4: Close App");
         }
-
         static void driverMenu()
         {
             Console.WriteLine("1: Change Availability");
             Console.WriteLine("2: Change Location");
             Console.WriteLine("3: Exit as Driver");
         }
-
         static void adminMenu()
         {
             Console.WriteLine("1: Add Driver");
             Console.WriteLine("2: Remove Driver");
-            Console.WriteLine("3: Update Admin");
+            Console.WriteLine("3: Update Driver");
             Console.WriteLine("4: Search Driver");
             Console.WriteLine("5: Exit as Admin");
         }
-
         static void searchMenu()
         {
             Console.WriteLine("1: Search by ID");
@@ -54,7 +47,7 @@ namespace BSEF20M034_H02
 
             string option = "0";
 
-            while(option != "4")
+            while (option != "4")
             {
                 mainMenu();
                 Console.Write("Select Option: ");
@@ -69,78 +62,23 @@ namespace BSEF20M034_H02
                     Console.ResetColor();
                 }
 
-                if(option == "1")
+                if (option == "1")
                 {
                     //Asking Passenger Details For Ride
-
                     Console.Write("Enter name: ");
                     Console.ForegroundColor = ConsoleColor.Green;
                     string passengerName = Console.ReadLine();
                     Console.ResetColor();
 
-                    bool flag = true; // This is for entering correct phone number
-
-                    Console.Write("Enter Phone Number: ");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    string passengerPhoneNumber = Console.ReadLine();
-                    Console.ResetColor();
-
-                    while (flag)
-                    {
-                        flag = false;
-
-                        // Verifying Correct Phone Number Format
-                        int phoneNumberLength = passengerPhoneNumber.Length;
-                        if (phoneNumberLength != 11)
-                        {
-                            flag = true;
-                        }
-
-                        else
-                        {
-                            // Check if any other character entered
-                            int i = 0;
-                            for (; i < phoneNumberLength; i++)
-                            {
-                                if (passengerPhoneNumber[i] != '0' && passengerPhoneNumber[i] != '1' && passengerPhoneNumber[i] != '2' && passengerPhoneNumber[i] != '3' && passengerPhoneNumber[i] != '4' && passengerPhoneNumber[i] != '5' && passengerPhoneNumber[i] != '6' && passengerPhoneNumber[i] != '7' && passengerPhoneNumber[i] != '8' && passengerPhoneNumber[i] != '9')
-                                {
-                                    flag = true;
-                                    i = phoneNumberLength;
-                                }
-                            }
-                        }
-
-                        // If got correct number or not
-                        if (flag)
-                        {
-                            Console.Write("Enter valid Number: ");
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            passengerPhoneNumber = Console.ReadLine();
-                            Console.ResetColor();
-                        }
-                    }
+                    string passengerPhoneNumber = Utils.getPhoneNumber();
 
                     Passenger passenger = new Passenger { name = passengerName, phoneNumber = passengerPhoneNumber };
 
-                    // Asking Starting Location
-                    Console.Write("Enter Start Location: ");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    string startLoc = Console.ReadLine();
-                    Console.ResetColor();
+                    Console.WriteLine("From where to start?");
+                    Location startLocation = Utils.inputLocation();
 
-                    string[] dimensions = startLoc.Split(',');
-
-                    Location startLocation = new Location { longitude = float.Parse(dimensions[1]), latitude = float.Parse(dimensions[0]) };
-
-                    // Asking Ending Location
-                    Console.Write("Enter End Location: ");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    string endLoc = Console.ReadLine();
-                    Console.ResetColor();
-
-                    dimensions = endLoc.Split(',');
-
-                    Location endLocation = new Location { longitude = float.Parse(dimensions[1]), latitude = float.Parse(dimensions[0]) };
+                    Console.WriteLine("Where to end journey?");
+                    Location endLocation = Utils.inputLocation();
 
                     // Asking For Ride Type
                     Console.Write("Enter Ride Type: ");
@@ -149,10 +87,10 @@ namespace BSEF20M034_H02
                     Console.ResetColor();
 
                     Ride myRide = new Ride();
-                    bool flag2 = myRide.bookRide(passenger, startLocation, endLocation, type);
+                    Driver driver = myRide.bookRide(passenger, startLocation, endLocation, type);
 
                     // No driver available
-                    if(flag2 == false)
+                    if (driver == null)
                     {
                         Console.WriteLine("-------------------");
                         Console.WriteLine("No driver available");
@@ -162,6 +100,12 @@ namespace BSEF20M034_H02
                     else
                     {
                         Console.WriteLine("\n--------------- THANK YOU ----------------\n");
+
+                        Console.WriteLine("---------------------------------------------------------------------------");
+                        Console.WriteLine("Name        Age        Gender        V.Type        V.Model        V.Licence");
+                        Console.WriteLine("---------------------------------------------------------------------------");
+                        Console.WriteLine(String.Format("{0,-12}{1,-11}{2,-14}{3,-14}{4,-15}{5,-17}", driver.name, driver.age, driver.gender, driver.vehicle.type, driver.vehicle.model, driver.vehicle.licencePlate));
+                        Console.WriteLine("---------------------------------------------------------------------------");
 
                         Console.WriteLine("Total cost of ride is " + myRide.calculatePrice(type, startLocation, endLocation));
 
@@ -179,27 +123,26 @@ namespace BSEF20M034_H02
 
                             Console.WriteLine("\nGive rating out of 5: ");
                             Console.ForegroundColor = ConsoleColor.Green;
-                            string val = Console.ReadLine();
+                            string rating = Console.ReadLine();
                             Console.ResetColor();
-                            int rating = Convert.ToInt32(val);
 
-                            while (rating < 1 || rating > 5)
+                            while (rating !=  "1" && rating != "2" && rating != "3" && rating != "4" && rating != "5")
                             {
-                                Console.WriteLine("\nRating should be from 1 to 5: ");
+                                Console.WriteLine("\nInvalid rating !!! Enter again: ");
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                val = Console.ReadLine();
+                                rating = Console.ReadLine();
                                 Console.ResetColor();
-                                rating = Convert.ToInt32(val);
                             }
+                            Console.WriteLine("Thanks for rating");
                         }
                         else
                         {
-                            Console.WriteLine("Try another driver");
+                            Console.WriteLine("Back to Main Menu");
                         }
                     }
                 }
 
-                else if(option == "2")
+                else if (option == "2")
                 {
                     // First of all check if driver exists or not
                     Console.Write("Enter ID: ");
@@ -238,20 +181,13 @@ namespace BSEF20M034_H02
                             // Update Location
                             else if (option2 == "2")
                             {
-                                Console.Write("Enter Current Location : ");
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                string loc = Console.ReadLine();
-                                Console.ResetColor();
-                                string[] dimensions = loc.Split(',');
-
-                                Location currentLocation = new Location { latitude = float.Parse(dimensions[0]), longitude = float.Parse(dimensions[1]) };
+                                Location currentLocation = Utils.inputLocation();
 
                                 Admin.updateLocation(id, currentLocation);
                                 Console.WriteLine("***** Location Updated *****");
                             }
                         }
                     }
-                    
                 }
 
                 else if (option == "3")
@@ -294,52 +230,10 @@ namespace BSEF20M034_H02
                             string address = Console.ReadLine();
                             Console.ResetColor();
 
-                            bool flag = true; // This is for entering correct phone number
-                            Console.Write("Enter Phone Number: ");
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            string phoneNumber = Console.ReadLine();
-                            Console.ResetColor();
-                            while (flag)
-                            {
-                                flag = false;
-
-                                // Verifying Correct Phone Number Format
-                                int phoneNumberLength = phoneNumber.Length;
-                                int i = 0;
-                                if (phoneNumberLength != 11)
-                                {
-                                    flag = true;
-                                }
-
-                                else
-                                {
-                                    for (; i < phoneNumberLength; i++)
-                                    {
-                                        if (phoneNumber[i] != '0' && phoneNumber[i] != '1' && phoneNumber[i] != '2' && phoneNumber[i] != '3' && phoneNumber[i] != '4' && phoneNumber[i] != '5' && phoneNumber[i] != '6' && phoneNumber[i] != '7' && phoneNumber[i] != '8' && phoneNumber[i] != '9')
-                                        {
-                                            flag = true;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (flag)
-                                {
-                                    Console.Write("Enter valid Number: ");
-                                    Console.ForegroundColor = ConsoleColor.Green;
-                                    phoneNumber = Console.ReadLine();
-                                    Console.ResetColor();
-                                }
-                            }
+                            string phoneNumber = Utils.getPhoneNumber();
 
                             // Asking drivers location
-                            Console.Write("Enter Location : ");
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            string loc = Console.ReadLine();
-                            Console.ResetColor();
-                            string[] dimensions = loc.Split(',');
-
-                            Location currentLocation = new Location { latitude = float.Parse(dimensions[0]), longitude = float.Parse(dimensions[1]) };
+                            Location currentLocation = Utils.inputLocation();
 
                             // Asking for vehicle information
                             Console.Write("Enter Vehicle Type: ");
@@ -360,11 +254,11 @@ namespace BSEF20M034_H02
                             Driver driver = new Driver { name = name, age = age, gender = gender, address = address, phoneNumber = phoneNumber, currentLocation = currentLocation, vehicle = vehicle, availability = true };
 
                             // Driver added
-                            Admin.addDriver(driver);
+                            int driverID = Admin.addDriver(driver);
 
-                            Console.WriteLine("------------------------");
-                            Console.WriteLine("----- Driver added -----");
-                            Console.WriteLine("------------------------");
+                            Console.WriteLine("-----------------------------------");
+                            Console.WriteLine($"----- Driver added with ID: {driverID} -----");
+                            Console.WriteLine("-----------------------------------");
                         }
 
                         else if (option2 == "2")
@@ -408,7 +302,11 @@ namespace BSEF20M034_H02
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 string val = Console.ReadLine();
                                 Console.ResetColor();
-                                int age = Convert.ToInt32(val);
+                                int age = 0;
+                                if (val != "")
+                                {
+                                    age = Convert.ToInt32(val);
+                                }
 
                                 Console.Write("Enter Gender: ");
                                 Console.ForegroundColor = ConsoleColor.Green;
@@ -461,10 +359,13 @@ namespace BSEF20M034_H02
                                 Console.Write("Enter Location : ");
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 string loc = Console.ReadLine();
+                                Location currentLocation = new Location { latitude = 0, longitude = 0 };
                                 Console.ResetColor();
-                                string[] dimensions = loc.Split(',');
-
-                                Location currentLocation = new Location { latitude = float.Parse(dimensions[0]), longitude = float.Parse(dimensions[1]) };
+                                if (loc != "")
+                                {
+                                    string[] dimensions = loc.Split(',');
+                                    currentLocation = new Location { latitude = float.Parse(dimensions[0]), longitude = float.Parse(dimensions[1]) };
+                                }
 
                                 // Asking for vehicle information
                                 Console.Write("Enter Vehicle Type: ");
@@ -504,7 +405,7 @@ namespace BSEF20M034_H02
                                 option3 = Console.ReadLine();
                                 while (option3 != "1" && option3 != "2" && option3 != "3" && option3 != "4" && option3 != "5" && option3 != "6")
                                 {
-                                    Console.Write("Select Valid Optionnn: ");
+                                    Console.Write("Select Valid Option: ");
                                     option3 = Console.ReadLine();
                                 }
 
@@ -536,7 +437,7 @@ namespace BSEF20M034_H02
                                     }
                                 }
 
-                                else if(option3 == "2")
+                                else if (option3 == "2")
                                 {
                                     // Asking for name to search
                                     Console.Write("Enter name: ");
@@ -547,7 +448,7 @@ namespace BSEF20M034_H02
                                     List<Driver> drivers = Admin.searchByName(name);
 
                                     // If drivers with that name not exist
-                                    if(drivers.Count == 0)
+                                    if (drivers.Count == 0)
                                     {
                                         Console.WriteLine("--------------------------------");
                                         Console.WriteLine("Drivers not exist with that name");
@@ -662,7 +563,7 @@ namespace BSEF20M034_H02
                                         Console.WriteLine("---------------------------------------------------------------------------");
                                     }
                                 }
-                            }          
+                            }
                         }
                     }
                 }

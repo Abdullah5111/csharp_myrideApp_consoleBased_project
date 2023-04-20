@@ -1,8 +1,0 @@
-C:\Users\X1 Carbon\Dropbox\My PC (DESKTOP-58DM7T9)\Desktop\6th Semester\SDC\Homework\BSEF20M034_H02\BSEF20M034_H02\bin\Debug\BSEF20M034_H02.exe.config
-C:\Users\X1 Carbon\Dropbox\My PC (DESKTOP-58DM7T9)\Desktop\6th Semester\SDC\Homework\BSEF20M034_H02\BSEF20M034_H02\bin\Debug\BSEF20M034_H02.exe
-C:\Users\X1 Carbon\Dropbox\My PC (DESKTOP-58DM7T9)\Desktop\6th Semester\SDC\Homework\BSEF20M034_H02\BSEF20M034_H02\bin\Debug\BSEF20M034_H02.pdb
-C:\Users\X1 Carbon\Dropbox\My PC (DESKTOP-58DM7T9)\Desktop\6th Semester\SDC\Homework\BSEF20M034_H02\BSEF20M034_H02\obj\Debug\BSEF20M034_H02.csproj.AssemblyReference.cache
-C:\Users\X1 Carbon\Dropbox\My PC (DESKTOP-58DM7T9)\Desktop\6th Semester\SDC\Homework\BSEF20M034_H02\BSEF20M034_H02\obj\Debug\BSEF20M034_H02.csproj.SuggestedBindingRedirects.cache
-C:\Users\X1 Carbon\Dropbox\My PC (DESKTOP-58DM7T9)\Desktop\6th Semester\SDC\Homework\BSEF20M034_H02\BSEF20M034_H02\obj\Debug\BSEF20M034_H02.csproj.CoreCompileInputs.cache
-C:\Users\X1 Carbon\Dropbox\My PC (DESKTOP-58DM7T9)\Desktop\6th Semester\SDC\Homework\BSEF20M034_H02\BSEF20M034_H02\obj\Debug\BSEF20M034_H02.exe
-C:\Users\X1 Carbon\Dropbox\My PC (DESKTOP-58DM7T9)\Desktop\6th Semester\SDC\Homework\BSEF20M034_H02\BSEF20M034_H02\obj\Debug\BSEF20M034_H02.pdb

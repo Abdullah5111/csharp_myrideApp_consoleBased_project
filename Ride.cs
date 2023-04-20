@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BSEF20M034_H02
+namespace BSEF20M034_H03
 {
     internal class Ride
     {
@@ -11,21 +11,20 @@ namespace BSEF20M034_H02
         public Driver driver { get; set; }
         public Passenger passenger { get; set; }
 
-        public bool bookRide(Passenger p, Location startLoc, Location endLoc, string vehType)
+        public Driver bookRide(Passenger p, Location startLoc, Location endLoc, string vehType)
         {
             // Getting list of available drivers
             List<Driver> availableDrivers = Admin.availDrivers(vehType);
 
             // If no driver available
-            if(availableDrivers.Count == 0)
+            if (availableDrivers.Count == 0)
             {
-                return false;
+                return null;
             }
 
             Driver d = availableDrivers[0];
 
             // Finding minimum distance driver .....
-
             // Applying eucular formula
             int num1 = (int)availableDrivers[0].currentLocation.latitude + (int)availableDrivers[0].currentLocation.longitude;
             int num2 = (int)startLoc.latitude + (int)startLoc.longitude;
@@ -47,7 +46,7 @@ namespace BSEF20M034_H02
             assignPassenger(p);
             setLocations(startLoc, endLoc);
 
-            return true;
+            return d;
         }
 
         public float calculatePrice(string vehicle, Location startLocation, Location endLocation)
@@ -78,12 +77,10 @@ namespace BSEF20M034_H02
 
             return price;
         }
-
         public void assignDriver(Driver d)
         {
             driver = d;
         }
-
         public void assignPassenger(Passenger p)
         {
             passenger = new Passenger { name = p.name, phoneNumber = p.phoneNumber };
